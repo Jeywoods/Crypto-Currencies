@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 void main() {
   runApp(const CryptocurrenciesListApp());
@@ -12,8 +13,30 @@ class CryptocurrenciesListApp extends StatelessWidget {
     return MaterialApp(
       title: 'CryptoCurrenciesList',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey,
-        primarySwatch: Colors.amber,
+        scaffoldBackgroundColor: Color(0xFF252525),
+        dividerColor: Colors.white10,
+        listTileTheme: const ListTileThemeData(iconColor: Colors.white),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF252525),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 26,
+            fontWeight: FontWeight.w700
+          ),
+        ),
+        textTheme: TextTheme(
+          bodyMedium: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 20
+          ),
+          labelSmall: TextStyle(
+            color: Colors.white.withValues(alpha: 0.2),
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+          ),
+
+        )
       ),
       home: const MyHomePage(title: 'CryptocurrenciesListApp'),
     );
@@ -30,39 +53,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('Crypto Currencies List'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: ListView.separated(
+        itemCount: 10,
+        separatorBuilder: (context, index) => const Divider(),
+        itemBuilder: (context, i) => ListTile(
+          leading: SvgPicture.asset(
+              'assets/svg/bitcoin_logo.svg',
+              height: 30,
+          ),
+          title: Text(
+              'Bitcoin',
+              style: theme.bodyMedium,
+          ),
+          subtitle: Text(
+            '2000\$',
+            style: theme.labelSmall,
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
