@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -13,16 +15,17 @@ class CryptocurrenciesListApp extends StatelessWidget {
     return MaterialApp(
       title: 'CryptoCurrenciesList',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFF252525),
+        scaffoldBackgroundColor: Color(0xFF31312E),
         dividerColor: Colors.white10,
         listTileTheme: const ListTileThemeData(iconColor: Colors.white),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF252525),
+          backgroundColor: Color(0xFF2C2B2A),
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 26,
             fontWeight: FontWeight.w700
           ),
+          centerTitle: true,
         ),
         textTheme: TextTheme(
           bodyMedium: const TextStyle(
@@ -38,39 +41,40 @@ class CryptocurrenciesListApp extends StatelessWidget {
 
         )
       ),
-      home: const MyHomePage(title: 'CryptocurrenciesListApp'),
+      routes: {
+        '/': (context) => CryptoListScreen(),
+        '/coin': (context) => CryptoCoinScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+class CryptoListScreen extends StatefulWidget {
+  const CryptoListScreen({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CryptoListScreen> createState() => _CryptoListScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CryptoListScreenState extends State<CryptoListScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Crypto Currencies List'),
-        centerTitle: true,
       ),
       body: ListView.separated(
         itemCount: 10,
         separatorBuilder: (context, index) => const Divider(),
-        itemBuilder: (context, i) => ListTile(
+        itemBuilder: (context, i) {
+          const coinName = 'Bitcoin';
+          return ListTile(
           leading: SvgPicture.asset(
               'assets/svg/bitcoin_logo.svg',
               height: 30,
           ),
           title: Text(
-              'Bitcoin',
+              coinName,
               style: theme.bodyMedium,
           ),
           subtitle: Text(
@@ -78,8 +82,55 @@ class _MyHomePageState extends State<MyHomePage> {
             style: theme.labelSmall,
           ),
           trailing: const Icon(Icons.arrow_forward_ios),
-        ),
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              '/coin',
+              arguments: coinName
+            );
+          },
+        );
+        },
+      ),
+
+    );
+  }
+}
+
+class CryptoCoinScreen extends StatefulWidget {
+  const CryptoCoinScreen({super.key});
+
+  @override
+  State<CryptoCoinScreen> createState() => _CryptoCoinScreenState();
+}
+
+class _CryptoCoinScreenState extends State<CryptoCoinScreen> {
+  String? coinName;
+
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if(args == null){
+      log('you must provide args');
+      return;
+    }
+    if(args is! String){
+      log('you must provide String args');
+      return;
+    }
+    coinName = args;
+    setState(() {
+
+    });
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(coinName ?? "..."),
       ),
     );
   }
 }
+
